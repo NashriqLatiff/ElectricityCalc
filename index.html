@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Calculator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Electricity Calculator</h1>
+    <form id="calcForm">
+        <div class="form-group">
+            <label for="voltage">Voltage (V)</label>
+            <input type="number" class="form-control" id="voltage" name="voltage" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="current">Current (A)</label>
+            <input type="number" class="form-control" id="current" name="current" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="rate">Current Rate (sen/kWh)</label>
+            <input type="number" class="form-control" id="rate" name="rate" step="0.01" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Calculate</button>
+    </form>
+    <div id="results" class="mt-4"></div>
+</div>
+
+<script>
+document.getElementById('calcForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const voltage = parseFloat(document.getElementById('voltage').value);
+    const current = parseFloat(document.getElementById('current').value);
+    const rate = parseFloat(document.getElementById('rate').value);
+
+    const power = voltage * current; // Power in Watts (W)
+    const energyPerHour = (power / 1000); // Energy in kWh
+    const totalPerHour = energyPerHour * (rate / 100); // Total cost per hour
+
+    let results = `<h2>Results:</h2>
+                   <p>Power: ${power.toFixed(2)} W</p>
+                   <p>Energy per Hour: ${energyPerHour.toFixed(4)} kWh</p>
+                   <p>Total per Hour: RM ${totalPerHour.toFixed(2)}</p>
+                   <table class="table mt-4">
+                       <thead>
+                           <tr>
+                               <th>Hour</th>
+                               <th>Energy (kWh)</th>
+                               <th>Total Cost (RM)</th>
+                           </tr>
+                       </thead>
+                       <tbody>`;
+                       
+    for (let hour = 1; hour <= 24; hour++) {
+        const energy = energyPerHour * hour;
+        const total = totalPerHour * hour;
+        results += `<tr>
+                        <td>${hour}</td>
+                        <td>${energy.toFixed(4)}</td>
+                        <td>RM ${total.toFixed(2)}</td>
+                    </tr>`;
+    }
+
+    results += `</tbody></table>`;
+    document.getElementById('results').innerHTML = results;
+});
+</script>
+</body>
+</html>
